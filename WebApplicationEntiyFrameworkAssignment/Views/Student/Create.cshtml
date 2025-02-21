@@ -1,0 +1,88 @@
+﻿@model WebApplicationEntiyFrameworkAssignment.Models.Student
+
+@{
+    ViewData["Title"] = "Create Student";
+}
+
+<h2>Create Student</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label>Student Name</label>
+        <input asp-for="Name" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Country</label>
+        <select id="CountryDropdown" name="Country" class="form-control" required>
+            <option value="">Select Country</option>
+            @foreach (var country in ViewBag.Countries)
+            {
+                <option value="@country.Name">@country.Name</option>  @* ✅ Store name instead of ID *@
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>State</label>
+        <select id="StateDropdown" name="State" class="form-control" required>
+            <option value="">Select State</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>City</label>
+        <select id="CityDropdown" name="City" class="form-control" required>
+            <option value="">Select City</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let countryDropdown = document.getElementById("CountryDropdown");
+            let stateDropdown = document.getElementById("StateDropdown");
+            let cityDropdown = document.getElementById("CityDropdown");
+
+            countryDropdown.addEventListener("change", function () {
+                let countryName = this.value;  // ✅ Use name instead of ID
+                stateDropdown.innerHTML = '<option value="">Select State</option>';
+                cityDropdown.innerHTML = '<option value="">Select City</option>';
+
+                if (countryName) {
+                    fetch(`/Student/GetStates?countryName=${encodeURIComponent(countryName)}`)
+                        .then(response => response.json())
+                        .then(states => {
+                            states.forEach(state => {
+                                let option = document.createElement("option");
+                                option.value = state.name;  // ✅ Store name instead of ID
+                                option.textContent = state.name;
+                                stateDropdown.appendChild(option);
+                            });
+                        });
+                }
+            });
+
+            stateDropdown.addEventListener("change", function () {
+                let stateName = this.value;  // ✅ Use name instead of ID
+                cityDropdown.innerHTML = '<option value="">Select City</option>';
+
+                if (stateName) {
+                    fetch(`/Student/GetCities?stateName=${encodeURIComponent(stateName)}`)
+                        .then(response => response.json())
+                        .then(cities => {
+                            cities.forEach(city => {
+                                let option = document.createElement("option");
+                                option.value = city.name;  // ✅ Store name instead of ID
+                                option.textContent = city.name;
+                                cityDropdown.appendChild(option);
+                            });
+                        });
+                }
+            });
+        });
+    </script>
+}
