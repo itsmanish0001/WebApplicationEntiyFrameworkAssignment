@@ -18,7 +18,7 @@
             <option value="">Select Country</option>
             @foreach (var country in ViewBag.Countries)
             {
-                <option value="@country.Name">@country.Name</option>  @* ✅ Store name instead of ID *@
+                <option value="@country.Name">@country.Name</option>
             }
         </select>
     </div>
@@ -42,47 +42,41 @@
 
 @section Scripts {
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", () => {
             let countryDropdown = document.getElementById("CountryDropdown");
             let stateDropdown = document.getElementById("StateDropdown");
             let cityDropdown = document.getElementById("CityDropdown");
 
-            countryDropdown.addEventListener("change", function () {
-                let countryName = this.value;  // ✅ Use name instead of ID
+            countryDropdown.onchange = () => {
+                let country = countryDropdown.value;
                 stateDropdown.innerHTML = '<option value="">Select State</option>';
                 cityDropdown.innerHTML = '<option value="">Select City</option>';
 
-                if (countryName) {
-                    fetch(`/Student/GetStates?countryName=${encodeURIComponent(countryName)}`)
-                        .then(response => response.json())
+                if (country) {
+                    fetch(`/Student/GetStates?countryName=${country}`)
+                        .then(res => res.json())
                         .then(states => {
                             states.forEach(state => {
-                                let option = document.createElement("option");
-                                option.value = state.name;  // ✅ Store name instead of ID
-                                option.textContent = state.name;
-                                stateDropdown.appendChild(option);
+                                stateDropdown.innerHTML += `<option value="${state.name}">${state.name}</option>`;
                             });
                         });
                 }
-            });
+            };
 
-            stateDropdown.addEventListener("change", function () {
-                let stateName = this.value;  // ✅ Use name instead of ID
+            stateDropdown.onchange = () => {
+                let state = stateDropdown.value;
                 cityDropdown.innerHTML = '<option value="">Select City</option>';
 
-                if (stateName) {
-                    fetch(`/Student/GetCities?stateName=${encodeURIComponent(stateName)}`)
-                        .then(response => response.json())
+                if (state) {
+                    fetch(`/Student/GetCities?stateName=${state}`)
+                        .then(res => res.json())
                         .then(cities => {
                             cities.forEach(city => {
-                                let option = document.createElement("option");
-                                option.value = city.name;  // ✅ Store name instead of ID
-                                option.textContent = city.name;
-                                cityDropdown.appendChild(option);
+                                cityDropdown.innerHTML += `<option value="${city.name}">${city.name}</option>`;
                             });
                         });
                 }
-            });
+            };
         });
     </script>
 }

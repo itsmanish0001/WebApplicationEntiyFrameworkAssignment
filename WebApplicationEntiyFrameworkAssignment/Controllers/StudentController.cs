@@ -28,8 +28,8 @@ namespace WebApplicationEntiyFrameworkAssignment.Controllers
         public async Task<IActionResult> GetStates(string countryName)
         {
             var states = await _context.States
-                                       .Where(s => s.Country.Name == countryName)  // ✅ Filter by name
-                                       .Select(s => new { s.Name })  // ✅ Return name only
+                                       .Where(s => s.Country.Name == countryName) 
+                                       .Select(s => new { s.Name }) 
                                        .ToListAsync();
             return Ok(states);
         }
@@ -39,8 +39,8 @@ namespace WebApplicationEntiyFrameworkAssignment.Controllers
         public async Task<IActionResult> GetCities(string stateName)
         {
             var cities = await _context.Cities
-                                       .Where(c => c.State.Name == stateName)  // ✅ Filter by name
-                                       .Select(c => new { c.Name })  // ✅ Return name only
+                                       .Where(c => c.State.Name == stateName)  
+                                       .Select(c => new { c.Name }) 
                                        .ToListAsync();
             return Ok(cities);
         }
@@ -53,7 +53,7 @@ namespace WebApplicationEntiyFrameworkAssignment.Controllers
             {
                 _context.Students.Add(student);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index"); // Redirect to list page after submission
+                return RedirectToAction("Create");
             }
 
             ViewBag.Countries = await _context.Countries.ToListAsync();
